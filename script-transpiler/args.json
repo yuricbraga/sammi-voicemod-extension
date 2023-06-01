@@ -1,0 +1,10 @@
+{
+  "extension_name": "Voicemod for SAMMI",
+  "extension_info": "A SAMMI extension that connects to Voicemod",
+  "extension_version": "v0.0.1",
+  "insert_external": "./index.html",
+  "insert_command": null,
+  "insert_hook": null,
+  "insert_script": "./scripts/main.js",
+  "insert_over": null
+}

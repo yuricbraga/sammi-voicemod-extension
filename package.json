@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "generate:sef": "node ./script-transpiler/generateSef.js"
+  },
+  "dependencies": {
+    "node-html-parser": "^6.1.5"
+  }
+}
