@@ -1,6 +1,11 @@
 const setCredentialsButton = document.getElementById("set-credentials");
 let voicemod = null;
 
+const saveCredentials = (IP, clientKey) => {
+  localStorage.setItem("IP", IP);
+  localStorage.setItem("clientKey", clientKey);
+};
+
 const registerCommands = (voiceIdList) => {
   SAMMI.extCommand("Set voice effect", 3355443, 52, {
     selectedVoiceId: ["Selected Voice ID", 20, "nofx", null, voiceIdList],
@@ -20,7 +25,7 @@ const registerCommands = (voiceIdList) => {
   });
 };
 
-const voicemodConnector = (IP) => {
+const voicemodConnector = (IP, clientKey) => {
   const socket = new WebSocket(`ws://${IP}:59129/v1`);
 
   let currentVoiceVariableNameQueue = [];
@@ -122,8 +127,6 @@ const voicemodConnector = (IP) => {
     const { msg, action, ...response } = JSON.parse(event.data);
 
     if (msg === "Pending authentication") {
-      const clientKey = document.getElementById("dev-client-key").value;
-
       socket.registerClient(clientKey);
     }
 
@@ -137,10 +140,25 @@ const voicemodConnector = (IP) => {
   };
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+  const [IP, clientKey] = [
+    localStorage.getItem("IP") || null,
+    localStorage.getItem("clientKey") || null,
+  ];
+
+  if (IP != null && clientKey != null) {
+    document.getElementById("voicemod-ip").value = IP;
+    document.getElementById("dev-client-key").value = clientKey;
+  }
+});
+
 setCredentialsButton.addEventListener("click", (event) => {
   const voicemodIP = document.getElementById("voicemod-ip").value;
+  const clientKey = document.getElementById("dev-client-key").value;
 
-  voicemod = voicemodConnector(voicemodIP);
+  saveCredentials(voicemodIP, clientKey);
+
+  voicemod = voicemodConnector(voicemodIP, clientKey);
 
   sammiclient.on("Set voice effect", (payload) => {
     const { selectedVoiceId } = payload.Data;
